@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "net.isotopia.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "tardis.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "minVersion": "0.8"
+}

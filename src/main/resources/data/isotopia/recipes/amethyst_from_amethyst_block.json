@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "isotopium:uranium_block"
+    }
+  ],
+  "result": {
+    "item": "isotopium:amethyst",
+    "count": 9
+  }
+}
