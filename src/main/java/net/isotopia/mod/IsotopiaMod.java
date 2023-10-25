@@ -3,7 +3,7 @@ package net.isotopia.mod;
 import net.isotopia.mod.cap.Capabilities;
 import net.isotopia.mod.cap.IPlayerRad;
 import net.isotopia.mod.cap.PlayerRadCap;
-import net.isotopia.mod.helper.WorldTickHandler;
+import net.isotopia.mod.helper.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,7 +29,6 @@ import org.apache.logging.log4j.Logger;
 @Mod(IsotopiaMod.MOD_ID)
 public class IsotopiaMod {
     public static final String MOD_ID = "isotopia";
-    public static final WorldTickHandler worldTickHandler = new WorldTickHandler();
 
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
@@ -55,7 +54,6 @@ public class IsotopiaMod {
 
     private void setup(final FMLCommonSetupEvent event) {
         // some preinit code
-        MinecraftForge.EVENT_BUS.register(IsotopiaMod.worldTickHandler);
         CapabilityManager.INSTANCE.register(IPlayerRad.class, new IPlayerRad.Storage(),() -> new PlayerRadCap(null));
     }
 
@@ -75,6 +73,8 @@ public class IsotopiaMod {
     // Event bus for receiving Events)
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class Events {
+
+
 
     }
 }

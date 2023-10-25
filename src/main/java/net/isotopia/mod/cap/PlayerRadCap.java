@@ -17,10 +17,10 @@ import net.minecraft.world.World;
 public class PlayerRadCap implements IPlayerRad {
 
     private PlayerEntity player;
-    private int dose = 0;
-    private int doserateA = 0;
-    private int doserateB = 0;
-    private int doserateG = 0;
+    private double dose = 0;
+    private double doserateA = 0;
+    private double doserateB = 0;
+    private double doserateG = 0;
 
     public PlayerRadCap(PlayerEntity ent) {
         this.player = ent;
@@ -29,40 +29,58 @@ public class PlayerRadCap implements IPlayerRad {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT tag = new CompoundNBT();
-        tag.putInt("dose", this.dose);
-        tag.putInt("dose_rate_alpha", this.doserateA);
-        tag.putInt("dose_rate_beta", this.doserateB);
-        tag.putInt("dose_rate_gamma", this.doserateG);
+        tag.putDouble("dose", this.dose);
+        tag.putDouble("dose_rate_alpha", this.doserateA);
+        tag.putDouble("dose_rate_beta", this.doserateB);
+        tag.putDouble("dose_rate_gamma", this.doserateG);
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        this.dose = nbt.getInt("dose");
-        this.doserateA = nbt.getInt("dose_rate_alpha");
-        this.doserateB = nbt.getInt("dose_rate_beta");
-        this.doserateG = nbt.getInt("dose_rate_gamma");
+        this.dose = nbt.getDouble("dose");
+        this.doserateA = nbt.getDouble("dose_rate_alpha");
+        this.doserateB = nbt.getDouble("dose_rate_beta");
+        this.doserateG = nbt.getDouble("dose_rate_gamma");
 
     }
 
     @Override
     public void tick() {
+        boolean hasRadioactiveBlocks = false;
         World world = player.getEntityWorld();
-        if (player instanceof ServerPlayerEntity && !world.isRemote()) {
+        if(world.getGameTime() % 20 == 0) {
+            if (player instanceof ServerPlayerEntity && !world.isRemote()) {
 
-            AxisAlignedBB aabb = new AxisAlignedBB(new BlockPos(player.lastTickPosX, player.lastTickPosY, player.lastTickPosZ)).grow(8);
+                AxisAlignedBB aabb = new AxisAlignedBB(new BlockPos(player.lastTickPosX, player.lastTickPosY, player.lastTickPosZ)).grow(12);
 
-            for (BlockPos blockPos : BlockPos.getAllInBoxMutable((int) aabb.minX,(int) aabb.minY,(int) aabb.minZ,(int) aabb.maxX,(int) aabb.maxY,(int) aabb.maxZ)) {
-                if(world.getBlockState(blockPos).getBlock() instanceof IRadioactive) {
-                    Block foundblock = world.getBlockState(blockPos).getBlock();
-                    doserateA = (int) ((((IRadioactive)foundblock).getActivityAlpha() * ((IRadioactive)foundblock).getEnergyPerDecayAlpha()) / (4*Math.PI*(player.getDistanceSq(new Vector3d(blockPos.getX(), blockPos.getY(), blockPos.getZ())))));
-                    doserateB = (int) ((((IRadioactive)foundblock).getActivityBeta() * ((IRadioactive)foundblock).getEnergyPerDecayBeta()) / (4*Math.PI*(player.getDistanceSq(new Vector3d(blockPos.getX(), blockPos.getY(), blockPos.getZ())))));
-                    doserateG = (int) ((((IRadioactive)foundblock).getActivityGamma() * ((IRadioactive)foundblock).getEnergyPerDecayGamma()) / (4*Math.PI*(player.getDistanceSq(new Vector3d(blockPos.getX(), blockPos.getY(), blockPos.getZ())))));
+                for (BlockPos blockPos : BlockPos.getAllInBoxMutable((int) aabb.minX, (int) aabb.minY, (int) aabb.minZ, (int) aabb.maxX, (int) aabb.maxY, (int) aabb.maxZ)) {
+                    if (world.getBlockState(blockPos).getBlock() instanceof IRadioactive) {
+                        Block foundBlock = world.getBlockState(blockPos).getBlock();
+                        IRadioactive radioactiveBlock = (IRadioactive) foundBlock;
 
-                    dose += doserateA * 20;
-                    dose += doserateB;
-                    dose += doserateG;
+                        double distance = player.getDistanceSq(new Vector3d(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+
+                        doserateA = (radioactiveBlock.getActivityAlpha() * radioactiveBlock.getEnergyPerDecayAlpha()) / (4 * Math.PI * distance);
+                        doserateB = (radioactiveBlock.getActivityBeta() * radioactiveBlock.getEnergyPerDecayBeta()) / (4 * Math.PI * distance);
+                        doserateG = (radioactiveBlock.getActivityGamma() * radioactiveBlock.getEnergyPerDecayGamma()) / (4 * Math.PI * distance);
+
+                        dose += (doserateA + doserateB + doserateG) / (20 * 800);
+                        hasRadioactiveBlocks = true;
+                    }
                 }
+
+            }
+
+            if(!hasRadioactiveBlocks){
+                doserateA = 0;
+                doserateB = 0;
+                doserateB = 0;
+                dose -= 10;
+            }
+
+            if(dose < 0){
+                dose = 0;
             }
 
         }
@@ -71,8 +89,15 @@ public class PlayerRadCap implements IPlayerRad {
     @Override
     public void update() {
 
-        if(dose > 10000 && player.experience > 100){
-            player.experience -= 1;
-        }
+    }
+
+    @Override
+    public double getDose(){
+        return this.dose;
+    }
+
+    @Override
+    public double getDosingRate(){
+        return (this.doserateA+this.doserateB+this.doserateG)/(20*800);
     }
 }

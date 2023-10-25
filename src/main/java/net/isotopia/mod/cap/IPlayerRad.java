@@ -12,6 +12,9 @@ public interface IPlayerRad extends INBTSerializable<CompoundNBT> {
     void tick();
 
     void update();
+
+    double getDose();
+    double getDosingRate();
     /** 1.17: IStorage interface removed with no replacement. Move these methods to the provider that implements {@linkplain ICapabilitySerializable}*/
     @Deprecated
     public class Storage implements Capability.IStorage<IPlayerRad> {

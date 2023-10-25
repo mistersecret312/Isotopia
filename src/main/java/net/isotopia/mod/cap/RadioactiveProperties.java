@@ -3,10 +3,10 @@ package net.isotopia.mod.cap;
 public class RadioactiveProperties {
     private int activityA;
     private int activityB;
-    private int activityG;
-    private double energyperdecayA;
-    private double energyperdecayB;
-    private double energyperdecayG;
+    private int activityG ;
+    private double energyperdecayA; //MeV
+    private double energyperdecayB; //MeV
+    private double energyperdecayG; //Mega-Electron Volts
     
     public RadioactiveProperties(int activityA, int activityB, int activityG, double energyperdecayA, double energyperdecayB, double energyperdecayG){
         this.activityA = activityA;

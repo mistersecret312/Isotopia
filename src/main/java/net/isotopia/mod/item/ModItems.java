@@ -16,6 +16,7 @@ public class ModItems {
     public static final RegistryObject<Item> AMETHYST = ITEMS.register("amethyst",
             () -> new Item(new Item.Properties().group(ModItemGroup.TUTORIAL_GROUP)));
 
+    public static final RegistryObject<Item> RADCOUNTER = ITEMS.register("dosimeter", () -> new Item(new Item.Properties().group(ModItemGroup.TUTORIAL_GROUP)));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
