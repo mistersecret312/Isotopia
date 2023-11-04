@@ -4,6 +4,7 @@ import net.isotopia.mod.cap.Capabilities;
 import net.isotopia.mod.cap.IPlayerRad;
 import net.isotopia.mod.cap.PlayerRadCap;
 import net.isotopia.mod.helper.EventHandler;
+import net.isotopia.mod.network.IsoNetwork;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -39,6 +40,8 @@ public class IsotopiaMod {
 
         ModItems.register(eventBus);
         ModBlocks.register(eventBus);
+
+        IsoNetwork.init();
 
         eventBus.addListener(this::setup);
         // Register the enqueueIMC method for modloading

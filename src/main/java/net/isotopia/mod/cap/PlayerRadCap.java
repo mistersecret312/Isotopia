@@ -2,10 +2,15 @@ package net.isotopia.mod.cap;
 
 import net.isotopia.mod.block.ModBlocks;
 import net.isotopia.mod.helper.IRadioactive;
+import net.isotopia.mod.helper.RadUtils;
+import net.isotopia.mod.network.IsoNetwork;
+import net.isotopia.mod.network.RadiationPacket;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.IngameGui;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -50,7 +55,9 @@ public class PlayerRadCap implements IPlayerRad {
         boolean hasRadioactiveBlocks = false;
         World world = player.getEntityWorld();
         if(world.getGameTime() % 20 == 0) {
-            if (player instanceof ServerPlayerEntity && !world.isRemote()) {
+            if (player != null && !world.isRemote()) {
+
+                dose += (doserateA + doserateB + doserateG) / (80 * 800);
 
                 AxisAlignedBB aabb = new AxisAlignedBB(new BlockPos(player.lastTickPosX, player.lastTickPosY, player.lastTickPosZ)).grow(12);
 
@@ -61,12 +68,24 @@ public class PlayerRadCap implements IPlayerRad {
 
                         double distance = player.getDistanceSq(new Vector3d(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
 
-                        doserateA = (radioactiveBlock.getActivityAlpha() * radioactiveBlock.getEnergyPerDecayAlpha()) / (4 * Math.PI * distance);
-                        doserateB = (radioactiveBlock.getActivityBeta() * radioactiveBlock.getEnergyPerDecayBeta()) / (4 * Math.PI * distance);
-                        doserateG = (radioactiveBlock.getActivityGamma() * radioactiveBlock.getEnergyPerDecayGamma()) / (4 * Math.PI * distance);
+                        doserateA += (radioactiveBlock.getActivityAlpha() * radioactiveBlock.getEnergyPerDecayAlpha()) / (4 * Math.PI * distance);
+                        doserateB += (radioactiveBlock.getActivityBeta() * radioactiveBlock.getEnergyPerDecayBeta()) / (4 * Math.PI * distance);
+                        doserateG += (radioactiveBlock.getActivityGamma() * radioactiveBlock.getEnergyPerDecayGamma()) / (4 * Math.PI * distance);
 
-                        dose += (doserateA + doserateB + doserateG) / (20 * 800);
+                        RadioactiveProperties fromArmor = RadUtils.getArmorProtectionFromRadiation(player);
+                        doserateA -= (fromArmor.getActivityAlpha()* fromArmor.getEnergyPerDecayAlpha())/(4*Math.PI);
+                        doserateB -= (fromArmor.getActivityBeta()* fromArmor.getEnergyPerDecayBeta())/(4*Math.PI);
+                        doserateG -= (fromArmor.getActivityGamma()* fromArmor.getEnergyPerDecayGamma())/(4*Math.PI);
                         hasRadioactiveBlocks = true;
+                    }
+                }
+                for(ItemStack item : player.inventory.mainInventory){
+                    if(item.getItem() instanceof IRadioactive){
+                        IRadioactive foundItem = (IRadioactive) item.getItem();
+
+                        doserateA += (foundItem.getActivityAlpha() * foundItem.getEnergyPerDecayAlpha()) / (8 * Math.PI );
+                        doserateB += (foundItem.getActivityBeta() * foundItem.getEnergyPerDecayBeta()) / (8 * Math.PI );
+                        doserateG += (foundItem.getActivityGamma() * foundItem.getEnergyPerDecayGamma()) / (8 * Math.PI );
                     }
                 }
 
@@ -83,13 +102,16 @@ public class PlayerRadCap implements IPlayerRad {
                 dose = 0;
             }
 
+            update();
         }
     }
 
     @Override
     public void update() {
-
+        if (!player.world.isRemote)
+            IsoNetwork.sendTo(new RadiationPacket(player.getEntityId(), this.serializeNBT()), (ServerPlayerEntity) player);
     }
+
 
     @Override
     public double getDose(){

@@ -25,7 +25,6 @@ public class EventHandler {
                 event.world.getServer().getPlayerList().getPlayers().forEach(player -> {
                     player.getCapability(Capabilities.PLAYER_RAD).ifPresent(cap -> {
                         cap.tick();
-                        cap.update();
                     });
                 });
             }

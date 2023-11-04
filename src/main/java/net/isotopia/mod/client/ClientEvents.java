@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientEvents {
 
     @SubscribeEvent
-    public void textOverlay(RenderGameOverlayEvent.Text event) {
+    public static void textOverlay(RenderGameOverlayEvent.Post event) {
         FontRenderer fr = Minecraft.getInstance().fontRenderer;
         int scaledWidth = Minecraft.getInstance().getMainWindow().getScaledWidth();
         int scaledHeight = Minecraft.getInstance().getMainWindow().getScaledHeight();

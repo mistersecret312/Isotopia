@@ -1,5 +1,6 @@
 package net.isotopia.mod.item;
 
+import net.isotopia.mod.cap.RadioactiveProperties;
 import net.minecraft.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
@@ -13,8 +14,8 @@ public class ModItems {
             DeferredRegister.create(ForgeRegistries.ITEMS, IsotopiaMod.MOD_ID);
 
 
-    public static final RegistryObject<Item> AMETHYST = ITEMS.register("amethyst",
-            () -> new Item(new Item.Properties().group(ModItemGroup.TUTORIAL_GROUP)));
+    public static final RegistryObject<Item> AMETHYST = ITEMS.register("uranium_ingot",
+            () -> new RadioactiveItemBase(new Item.Properties().group(ModItemGroup.TUTORIAL_GROUP), new RadioactiveProperties(33333, 4, 0, 4.2, 0.002, 0.0)));
 
     public static final RegistryObject<Item> RADCOUNTER = ITEMS.register("dosimeter", () -> new Item(new Item.Properties().group(ModItemGroup.TUTORIAL_GROUP)));
 
