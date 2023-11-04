@@ -4,12 +4,9 @@ import net.isotopia.mod.IsotopiaMod;
 import net.isotopia.mod.cap.Capabilities;
 import net.isotopia.mod.cap.IPlayerRad;
 import net.isotopia.mod.cap.PlayerRadCap;
-import net.isotopia.mod.client.RadScreenRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,14 +29,6 @@ public class EventHandler {
                     });
                 });
             }
-        }
-    }
-
-    @SubscribeEvent
-    public static void renderRadGUI(RenderGameOverlayEvent.Post event){
-        if(event.getType() == RenderGameOverlayEvent.ElementType.ALL){
-            RadScreenRenderer radscreen = new RadScreenRenderer(Minecraft.getInstance());
-            radscreen.renderIngameGui(event.getMatrixStack(), event.getPartialTicks());
         }
     }
 
