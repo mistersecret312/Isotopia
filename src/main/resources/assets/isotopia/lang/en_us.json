@@ -1,6 +1,15 @@
 {
-  "item.isotopia.amethyst": "Amethyst",
+  "item.isotopia.uranium_ingot": "Uranium Ingot",
   "block.isotopia.uranium_ore": "Uranium Ore",
   "block.isotopia.uranium_block": "Uranium Block",
-  "itemGroup.isotopiaTab": "Isotopia"
+  "item.isotopia.unrefined_uranium": "Unrefined Uranium",
+  "item.isotopia.dosimeter": "Dosimeter",
+  "item.isotopia.geiger_counter": "Geiger Counter",
+  "itemGroup.isotopiumTab": "Isotopia",
+
+  "tooltip.item.isotopia.uranium_ingot.isotope.1": "Uranium 235",
+  "tooltip.item.isotopia.uranium_ingot.isotope.2": "Uranium 238",
+  "tooltip.item.isotopia.unrefined_uranium.isotope.1": "Uranium 235",
+  "tooltip.item.isotopia.unrefined_uranium.isotope.2": "Uranium 238"
+
 }

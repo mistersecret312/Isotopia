@@ -3,24 +3,14 @@ package net.isotopia.mod.helper;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.isotopia.mod.cap.Capabilities;
 import net.isotopia.mod.cap.IPlayerRad;
-import net.isotopia.mod.cap.RadioactiveProperties;
 import net.isotopia.mod.item.ModItems;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 
 import java.text.DecimalFormat;
 
@@ -38,9 +28,16 @@ public class RadUtils {
 
     public static void drawPlayerCapabilityText(PlayerEntity player, MatrixStack matrixStack, FontRenderer fr, int scaledWidth, int scaledHeight) {
         if (player != null) {
-            if (isInEitherHand(player, ModItems.RADCOUNTER.get())) {
+            if (isInEitherHand(player, ModItems.DOSIMETER.get())) {
                 DecimalFormat df = new DecimalFormat("#.#");
-                player.getCapability(Capabilities.PLAYER_RAD).ifPresent(cap -> fr.drawStringWithShadow(matrixStack, "Dose: " + RadUtils.formatDose(Double.parseDouble(df.format(cap.getDose()))), scaledWidth / 2 - 10, scaledHeight / 2 - 5, 0xFFFFFF));
+                player.getCapability(Capabilities.PLAYER_RAD).ifPresent(cap -> fr.drawStringWithShadow(matrixStack, "Dose: " + RadUtils.formatDose(Double.parseDouble(df.format(cap.getDose()))), scaledWidth/4 - 10, scaledHeight/4 - 5, 0xFFFFFF));
+
+            }
+        }
+        if (player != null) {
+            if (isInEitherHand(player, ModItems.GEIGER.get())) {
+                DecimalFormat df = new DecimalFormat("#.#");
+                player.getCapability(Capabilities.PLAYER_RAD).ifPresent(cap -> fr.drawStringWithShadow(matrixStack, "Radiation: " + RadUtils.formatDoseRate(Double.parseDouble(df.format(cap.getDosingRate()))), scaledWidth/4 - 10, scaledHeight/4 - 5, 0xFFFFFF));
 
             }
         }
@@ -77,6 +74,23 @@ public class RadUtils {
             return df.format(doseInMsv / 1_000_000_000.0) + " MSv";
         } else {
             return df.format(doseInMsv / 1_000_000_000_000_000.0) + " GSv";
+        }
+    }
+
+    public static String formatDoseRate(double doseInMsv) {
+        DecimalFormat df = new DecimalFormat("#.#");
+        if (doseInMsv < 1.0) {
+            return df.format(doseInMsv) + " mSv/s";
+        } else if (doseInMsv < 1000.0) {
+            return df.format(doseInMsv) + " mSv/s";
+        } else if (doseInMsv < 1000000.0) {
+            return df.format(doseInMsv / 1000.0) + " Sv/s";
+        } else if (doseInMsv < 1000000000.0) {
+            return df.format(doseInMsv / 1_000_000.0) + " kSv/s";
+        } else if (doseInMsv < 1_000_000_000_000.0) {
+            return df.format(doseInMsv / 1_000_000_000.0) + " MSv/s";
+        } else {
+            return df.format(doseInMsv / 1_000_000_000_000_000.0) + " GSv/s";
         }
     }
 

@@ -8,7 +8,7 @@ public class ModItemGroup {
     public static final ItemGroup TUTORIAL_GROUP = new ItemGroup("isotopiumTab") {
         @Override
         public ItemStack createIcon() {
-            return new ItemStack(ModItems.AMETHYST.get());
+            return new ItemStack(ModItems.URANIUM_INGOT.get());
         }
     };
 
