@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "isotopia:block/amethyst_block"
+    "all": "isotopia:block/uranium_ore"
   }
 }

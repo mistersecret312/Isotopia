@@ -1,4 +1,4 @@
-package net.isotopia.mod.cap;
+package net.isotopia.mod.helper;
 
 public class RadioactiveProperties {
     private int activityA;
@@ -23,7 +23,6 @@ public class RadioactiveProperties {
     public int getActivityBeta() {
         return activityB;
     }
-
     
     public int getActivityGamma() {
         return activityG;
@@ -40,4 +39,5 @@ public class RadioactiveProperties {
     public double getEnergyPerDecayGamma() {
         return energyperdecayG;
     }
+
 }

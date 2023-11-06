@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "isotopium:isotopium_block"
+          "name": "isotopium:uranium_block"
         }
       ]
     }
