@@ -19,7 +19,31 @@ public class RadioactiveProperties {
     public int getActivityAlpha() {
         return activityA;
     }
-    
+
+    public void setActivityA(int activityA) {
+        this.activityA = activityA;
+    }
+
+    public void setActivityB(int activityB) {
+        this.activityB = activityB;
+    }
+
+    public void setActivityG(int activityG) {
+        this.activityG = activityG;
+    }
+
+    public void setEnergyperdecayA(double energyperdecayA) {
+        this.energyperdecayA = energyperdecayA;
+    }
+
+    public void setEnergyperdecayB(double energyperdecayB) {
+        this.energyperdecayB = energyperdecayB;
+    }
+
+    public void setEnergyperdecayG(double energyperdecayG) {
+        this.energyperdecayG = energyperdecayG;
+    }
+
     public int getActivityBeta() {
         return activityB;
     }

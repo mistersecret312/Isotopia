@@ -5,6 +5,7 @@ import net.isotopia.mod.cap.IPlayerRad;
 import net.isotopia.mod.cap.PlayerRadCap;
 import net.isotopia.mod.helper.EventHandler;
 import net.isotopia.mod.network.IsoNetwork;
+import net.isotopia.mod.worldgen.IsoFeatures;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -57,6 +58,10 @@ public class IsotopiaMod {
 
     private void setup(final FMLCommonSetupEvent event) {
         // some preinit code
+        event.enqueueWork(() -> {
+            IsoFeatures.registerConfiguredFeatures();
+        });
+
         CapabilityManager.INSTANCE.register(IPlayerRad.class, new IPlayerRad.Storage(),() -> new PlayerRadCap(null));
     }
 

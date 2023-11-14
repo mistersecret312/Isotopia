@@ -1,5 +1,6 @@
 package net.isotopia.mod.block;
 
+import com.google.common.collect.Lists;
 import net.isotopia.mod.helper.IIsotopic;
 import net.isotopia.mod.helper.IsotopeData;
 import net.isotopia.mod.helper.RadioactiveProperties;
@@ -28,13 +29,13 @@ public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS
             = DeferredRegister.create(ForgeRegistries.BLOCKS, IsotopiaMod.MOD_ID);
 
-    public static final RegistryObject<RadioactiveBlockBase> URANIUM_ORE = registerRadioactiveBlock("uranium_ore",
-            () -> new RadioactiveBlockBase(AbstractBlock.Properties.create(Material.ROCK)
-                    .harvestLevel(2).setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(5f),new RadioactiveProperties(2000, 10, 0, 4.2, 0.002, 0.0)), new RadioactiveProperties(2000, 10, 0, 4.2, 0.002, 0.0));
+    public static final RegistryObject<Block> URANIUM_ORE = registerIsotopicBlock("uranium_ore",
+            () -> new GlowingRadioactiveBlock(AbstractBlock.Properties.create(Material.ROCK)
+                    .harvestLevel(2).setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(5f), Lists.newArrayList(new IsotopeData(0.7, new RadioactiveProperties(300000, 300, 0, 4.2, 0.002, 0.0)), new IsotopeData(99.3, new RadioactiveProperties(5555, 2, 1, 4.8, 0.2, 1.2)))), Lists.newArrayList(new IsotopeData(0.7, new RadioactiveProperties(300000, 300, 0, 4.2, 0.002, 0.0)), new IsotopeData(99.3, new RadioactiveProperties(5555, 2, 1, 4.8, 0.2, 1.2))));
 
-    public static final RegistryObject<Block> URANIUM_BLOCK = registerRadioactiveBlock("uranium_block",
-            () -> new RadioactiveBlockBase(AbstractBlock.Properties.create(Material.ROCK)
-                    .harvestLevel(2).setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(8f), new RadioactiveProperties(300000, 300, 0, 4.2, 0.002, 0.0)), new RadioactiveProperties(300000, 300, 0, 4.2, 0.002, 0.0));
+    public static final RegistryObject<Block> URANIUM_BLOCK = registerIsotopicBlock("uranium_block",
+            () -> new IsotopicBlock(AbstractBlock.Properties.create(Material.ROCK)
+                    .harvestLevel(2).setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(8f), Lists.newArrayList(new IsotopeData(0.7, new RadioactiveProperties(300000, 300, 0, 4.2, 0.002, 0.0)), new IsotopeData(99.3, new RadioactiveProperties(5555, 2, 1, 4.8, 0.2, 1.2)))), Lists.newArrayList(new IsotopeData(0.7, new RadioactiveProperties(300000, 300, 0, 4.2, 0.002, 0.0)), new IsotopeData(99.3, new RadioactiveProperties(5555, 2, 1, 4.8, 0.2, 1.2))));
 
 
     private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block) {

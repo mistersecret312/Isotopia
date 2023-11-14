@@ -1,5 +1,10 @@
 {
   "variants": {
-    "": { "model": "isotopia:block/uranium_ore" }
+    "glowing:false": {
+      "model": "isotopia:block/uranium_ore"
+    },
+    "glowing:true": {
+      "model": "isotopia:block/enriched_uranium_ore"
+    }
   }
 }
