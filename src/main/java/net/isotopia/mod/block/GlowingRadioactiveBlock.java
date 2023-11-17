@@ -30,7 +30,7 @@ public class GlowingRadioactiveBlock extends IsotopicBlock {
     @Override
     public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
         if(!worldIn.getBlockState(pos).get(property)){
-            if(this.getIsotopicData().get(0).getPercentage() > 0.007){
+            if(this.getIsotopicData().get(0).getPercentage() > 0.7){
                 worldIn.setBlockState(pos, state.with(property, true));
             }
         }

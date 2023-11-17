@@ -1,21 +1,23 @@
 package net.isotopia.mod.tile;
 
 import com.google.common.collect.Lists;
+import net.isotopia.mod.block.IsotopicBlock;
+import net.isotopia.mod.helper.IIsotopic;
 import net.isotopia.mod.helper.IsotopeData;
 import net.isotopia.mod.helper.RadioactiveProperties;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.List;
 
-public class IsotopeTile extends TileEntity {
+public class IsotopeTile extends TileEntity implements ITickableTileEntity, IIsotopic {
 
-    private List<IsotopeData> iso_data = Lists.newArrayList(new IsotopeData(100, new RadioactiveProperties(0,0,0,0,0,0)), new IsotopeData(100, new RadioactiveProperties(0,0,0,0,0,0)));
-
+    private List<IsotopeData> iso_data;
     public IsotopeTile() {
         super(IsoTiles.ISO.get());
     }
@@ -41,11 +43,11 @@ public class IsotopeTile extends TileEntity {
         return super.write(compound);
     }
 
-    public void setData(List<IsotopeData> data) {
+    public void setIsotopicData(List<IsotopeData> data) {
         this.iso_data = data;
     }
 
-    public List<IsotopeData> getData() {
+    public List<IsotopeData> getIsotopicData() {
         return this.iso_data;
     }
 
@@ -54,4 +56,12 @@ public class IsotopeTile extends TileEntity {
             world.notifyBlockUpdate(getPos(), getBlockState(), getBlockState(), 3);
     }
 
+    @Override
+    public void tick() {
+        if (!this.getWorld().isRemote) {
+            if (this.getBlockState().getBlock() instanceof IsotopicBlock) {
+                this.iso_data = ((IsotopicBlock) this.getBlockState().getBlock()).getIsotopicData();
+            }
+        }
+    }
 }

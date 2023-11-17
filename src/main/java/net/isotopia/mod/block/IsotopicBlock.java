@@ -59,6 +59,7 @@ public class IsotopicBlock extends TileBlock implements IIsotopic {
     public ItemStack getItem(IBlockReader worldIn, BlockPos pos, BlockState state) {
         ItemStack itemstack = super.getItem(worldIn, pos, state);
         IsotopeTile isotopeTile = (IsotopeTile) worldIn.getTileEntity(pos);
+        ((IIsotopic)itemstack.getItem()).setIsotopicData(isotopeTile.getIsotopicData());
         CompoundNBT compoundnbt = isotopeTile.write(new CompoundNBT());
         if (!compoundnbt.isEmpty()) {
             itemstack.setTagInfo("BlockEntityTag", compoundnbt);

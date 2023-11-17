@@ -50,7 +50,7 @@ public class EventHandler {
                             List<IsotopeData> list = Lists.newArrayList();
                             list.add(new IsotopeData((1-randomValue)*100, new RadioactiveProperties(300000, 300, 0, 4.2, 0.002, 0.0)));
                             list.add(new IsotopeData(randomValue*100, new RadioactiveProperties(5555, 2, 1, 4.8, 0.2, 1.2)));
-                            tile.setData(list);
+                            tile.setIsotopicData(list);
 
                         }
                     }

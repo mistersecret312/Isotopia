@@ -5,6 +5,7 @@ import net.isotopia.mod.cap.IPlayerRad;
 import net.isotopia.mod.cap.PlayerRadCap;
 import net.isotopia.mod.helper.EventHandler;
 import net.isotopia.mod.network.IsoNetwork;
+import net.isotopia.mod.tile.IsoTiles;
 import net.isotopia.mod.worldgen.IsoFeatures;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -41,6 +42,7 @@ public class IsotopiaMod {
 
         ModItems.register(eventBus);
         ModBlocks.register(eventBus);
+        IsoTiles.TILES.register(eventBus);
 
         IsoNetwork.init();
 

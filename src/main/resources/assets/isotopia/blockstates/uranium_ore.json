@@ -1,9 +1,9 @@
 {
   "variants": {
-    "glowing:false": {
+    "glowing=false": {
       "model": "isotopia:block/uranium_ore"
     },
-    "glowing:true": {
+    "glowing=true": {
       "model": "isotopia:block/enriched_uranium_ore"
     }
   }
