@@ -17,6 +17,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Random;
 
@@ -42,10 +43,8 @@ public class IsotopicBlock extends TileBlock implements IIsotopic {
             IsotopeTile isotopeTile = (IsotopeTile) tileentity;
             if (!worldIn.isRemote && player.isCreative()) {
                 ItemStack itemstack = new ItemStack(this);
-                CompoundNBT compoundnbt = isotopeTile.write(new CompoundNBT());
-                if (!compoundnbt.isEmpty()) {
-                    itemstack.setTagInfo("BlockEntityTag", compoundnbt);
-                }
+                IIsotopic stack = (IIsotopic) itemstack.getItem();
+                stack.setIsotopicData(isotopeTile.getIsotopicData());
 
                 ItemEntity itementity = new ItemEntity(worldIn, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
                 itementity.setDefaultPickupDelay();
@@ -60,31 +59,8 @@ public class IsotopicBlock extends TileBlock implements IIsotopic {
         ItemStack itemstack = super.getItem(worldIn, pos, state);
         IsotopeTile isotopeTile = (IsotopeTile) worldIn.getTileEntity(pos);
         ((IIsotopic)itemstack.getItem()).setIsotopicData(isotopeTile.getIsotopicData());
-        CompoundNBT compoundnbt = isotopeTile.write(new CompoundNBT());
-        if (!compoundnbt.isEmpty()) {
-            itemstack.setTagInfo("BlockEntityTag", compoundnbt);
-        }
 
         return itemstack;
-    }
-
-    @Override
-    public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
-        if(!this.hasGenned){
-            double minValue = 0.99;
-            double maxValue = 1.0;
-            double randomValue1 = minValue + (maxValue - minValue) * random.nextDouble();
-            double randomValue2 = 1-randomValue1;
-            this.data.get(1).setPercentage(randomValue1);
-            this.data.get(0).setPercentage(randomValue2);
-            this.hasGenned = true;
-        }
-        super.randomTick(state, worldIn, pos, random);
-    }
-
-    @Override
-    public boolean ticksRandomly(BlockState state) {
-        return !this.hasGenned;
     }
 
     @Override

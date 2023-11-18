@@ -2,6 +2,7 @@ package net.isotopia.mod.helper;
 
 import com.google.common.collect.Lists;
 import net.isotopia.mod.IsotopiaMod;
+import net.isotopia.mod.block.IsotopicBlock;
 import net.isotopia.mod.block.ModBlocks;
 import net.isotopia.mod.cap.Capabilities;
 import net.isotopia.mod.cap.IPlayerRad;
@@ -20,6 +21,7 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Random;
 
@@ -51,6 +53,9 @@ public class EventHandler {
                             list.add(new IsotopeData((1-randomValue)*100, new RadioactiveProperties(300000, 300, 0, 4.2, 0.002, 0.0)));
                             list.add(new IsotopeData(randomValue*100, new RadioactiveProperties(5555, 2, 1, 4.8, 0.2, 1.2)));
                             tile.setIsotopicData(list);
+                            IsotopicBlock block = (IsotopicBlock) tile.getBlockState().getBlock();
+                            block.setIsotopicData(list);
+                            block.hasGenned = true;
 
                         }
                     }

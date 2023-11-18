@@ -10,6 +10,8 @@
   "tooltip.item.isotopia.uranium_ingot.isotope.1": "Uranium 235",
   "tooltip.item.isotopia.uranium_ingot.isotope.2": "Uranium 238",
   "tooltip.item.isotopia.unrefined_uranium.isotope.1": "Uranium 235",
-  "tooltip.item.isotopia.unrefined_uranium.isotope.2": "Uranium 238"
+  "tooltip.item.isotopia.unrefined_uranium.isotope.2": "Uranium 238",
+  "tooltip.item.isotopia.uranium_ore.isotope.1": "Uranium 235",
+  "tooltip.item.isotopia.uranium_ore.isotope.2": "Uranium 238"
 
 }

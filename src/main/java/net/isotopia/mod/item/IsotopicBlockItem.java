@@ -10,6 +10,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +42,7 @@ public class IsotopicBlockItem extends BlockItem implements IIsotopic {
         AtomicInteger i = new AtomicInteger();
         ((IIsotopic)stack.getItem()).getIsotopicData().forEach(iso -> {
             i.getAndIncrement();
-            tooltip.add(new TranslationTextComponent("tooltip."+stack.getTranslationKey()+".isotope."+i.get()).appendSibling(new StringTextComponent(String.valueOf(iso.getPercentage())).appendSibling(new StringTextComponent("%"))));
+            tooltip.add(new TranslationTextComponent("tooltip."+stack.getTranslationKey()+".isotope."+i.get()).mergeStyle(TextFormatting.DARK_GREEN).appendSibling(new StringTextComponent(": " + iso.getPercentage()).mergeStyle(TextFormatting.WHITE).appendSibling(new StringTextComponent("%"))));
         });
     }
 }

@@ -12,6 +12,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.RangedInteger;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import org.apache.logging.log4j.LogManager;
 
@@ -26,20 +27,8 @@ public class GlowingRadioactiveBlock extends IsotopicBlock {
         super(properties, data);
         this.setDefaultState(stateContainer.getBaseState().with(property, false));
     }
-
-    @Override
-    public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
-        if(!worldIn.getBlockState(pos).get(property)){
-            if(this.getIsotopicData().get(0).getPercentage() > 0.7){
-                worldIn.setBlockState(pos, state.with(property, true));
-            }
-        }
-        super.randomTick(state, worldIn, pos, random);
-    }
-
-    @Override
-    public boolean ticksRandomly(BlockState state) {
-        return !state.get(property);
+    public void setGlow(BlockState state, World world, BlockPos pos, boolean value){
+        world.setBlockState(pos, state.with(property, value));
     }
 
    @Override

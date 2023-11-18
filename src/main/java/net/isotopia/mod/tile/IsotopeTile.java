@@ -1,6 +1,7 @@
 package net.isotopia.mod.tile;
 
 import com.google.common.collect.Lists;
+import net.isotopia.mod.block.GlowingRadioactiveBlock;
 import net.isotopia.mod.block.IsotopicBlock;
 import net.isotopia.mod.helper.IIsotopic;
 import net.isotopia.mod.helper.IsotopeData;
@@ -61,6 +62,12 @@ public class IsotopeTile extends TileEntity implements ITickableTileEntity, IIso
         if (!this.getWorld().isRemote) {
             if (this.getBlockState().getBlock() instanceof IsotopicBlock) {
                 this.iso_data = ((IsotopicBlock) this.getBlockState().getBlock()).getIsotopicData();
+            }
+            if(this.getBlockState().getBlock() instanceof GlowingRadioactiveBlock){
+                GlowingRadioactiveBlock block = (GlowingRadioactiveBlock) this.getBlockState().getBlock();
+                if(block.getIsotopicData().get(0).getPercentage() > 0.9f) {
+                    block.setGlow(getBlockState(), world, pos, true);
+                }
             }
         }
     }

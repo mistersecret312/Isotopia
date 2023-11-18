@@ -88,9 +88,9 @@ public class PlayerRadCap implements IPlayerRad {
                             IsotopeTile tile = (IsotopeTile) world.getTileEntity(blockPos);
                             List<IsotopeData> data = tile.getIsotopicData();
                             data.forEach(isotopeData -> {
-                                localDose += ((isotopeData.radioactiveProperties.getActivityAlpha()*isotopeData.radioactiveProperties.getEnergyPerDecayAlpha())/ (4 * Math.PI * distance));
-                                localDose += ((isotopeData.radioactiveProperties.getActivityBeta()*isotopeData.radioactiveProperties.getEnergyPerDecayBeta())/ (4 * Math.PI * distance));
-                                localDose += ((isotopeData.radioactiveProperties.getActivityGamma()*isotopeData.radioactiveProperties.getEnergyPerDecayGamma())/ (4 * Math.PI * distance));
+                                localDose += ((isotopeData.radioactiveProperties.getActivityAlpha()*isotopeData.radioactiveProperties.getEnergyPerDecayAlpha())/ (8 * Math.PI * distance));
+                                localDose += ((isotopeData.radioactiveProperties.getActivityBeta()*isotopeData.radioactiveProperties.getEnergyPerDecayBeta())/ (8 * Math.PI * distance));
+                                localDose += ((isotopeData.radioactiveProperties.getActivityGamma()*isotopeData.radioactiveProperties.getEnergyPerDecayGamma())/ (8 * Math.PI * distance));
                             });
                         }
                         world.getTileEntity(blockPos).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(cap -> {
