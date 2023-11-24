@@ -7,6 +7,7 @@ import net.isotopia.mod.helper.IIsotopic;
 import net.isotopia.mod.helper.IsotopeData;
 import net.isotopia.mod.helper.RadioactiveProperties;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -14,11 +15,12 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class IsotopeTile extends TileEntity implements ITickableTileEntity, IIsotopic {
 
-    private List<IsotopeData> iso_data;
+    private List<IsotopeData> iso_data = new ArrayList<>(4);
     public IsotopeTile() {
         super(IsoTiles.ISO.get());
     }
@@ -27,19 +29,23 @@ public class IsotopeTile extends TileEntity implements ITickableTileEntity, IIso
     public void read(BlockState state, CompoundNBT compound) {
         super.read(state, compound);
 
-        ListNBT isotopes = compound.getList("isotopes_initial", Constants.NBT.TAG_COMPOUND);
-        this.iso_data.clear();
-        for(INBT iso : isotopes) {
-            this.iso_data.add(IsotopeData.deserializeNBT((CompoundNBT) iso));
+        ListNBT isotopes = compound.getList("isotopes", Constants.NBT.TAG_COMPOUND);
+        for(int i = 0; i < isotopes.size(); ++i) {
+            CompoundNBT compoundnbt = isotopes.getCompound(i);
+            this.iso_data.set(i, IsotopeData.read(compoundnbt));
         }
     }
 
     @Override
     public CompoundNBT write(CompoundNBT compound) {
+        super.write(compound);
         ListNBT isotopes = new ListNBT();
-        this.getIsotopicData().forEach(iso -> isotopes.add(iso.serializeNBT()));
-        compound.put("isotopes_initial", isotopes);
-        return super.write(compound);
+        for(int i = 0; i < this.iso_data.size(); ++i) {
+            CompoundNBT compoundnbt = iso_data.get(i).serializeNBT();
+            isotopes.set(i, compoundnbt);
+        }
+        compound.put("isotopes", isotopes);
+        return compound;
     }
 
     public void setIsotopicData(List<IsotopeData> data) {
