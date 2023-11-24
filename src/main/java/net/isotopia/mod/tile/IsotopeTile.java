@@ -37,9 +37,7 @@ public class IsotopeTile extends TileEntity implements ITickableTileEntity, IIso
     @Override
     public CompoundNBT write(CompoundNBT compound) {
         ListNBT isotopes = new ListNBT();
-        for(IsotopeData iso : this.iso_data){
-            isotopes.add(iso.serializeNBT());
-        }
+        this.getIsotopicData().forEach(iso -> isotopes.add(iso.serializeNBT()));
         compound.put("isotopes_initial", isotopes);
         return super.write(compound);
     }

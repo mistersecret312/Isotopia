@@ -23,8 +23,6 @@ import java.util.Random;
 
 public class IsotopicBlock extends TileBlock implements IIsotopic {
 
-
-
     public boolean hasGenned = false;
     private List<IsotopeData> data;
 

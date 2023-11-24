@@ -5,9 +5,13 @@ import net.isotopia.mod.helper.IRadioactive;
 import net.isotopia.mod.helper.IsotopeData;
 import net.isotopia.mod.helper.RadioactiveProperties;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -27,6 +31,15 @@ public class IsotopicBlockItem extends BlockItem implements IIsotopic {
         this.data = data;
     }
 
+
+
+    @Override
+    protected boolean onBlockPlaced(BlockPos pos, World worldIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
+        IIsotopic block = (IIsotopic) state.getBlock();
+        block.setIsotopicData(data);
+        return super.onBlockPlaced(pos, worldIn, player, stack, state);
+    }
+
     @Override
     public List<IsotopeData> getIsotopicData() {
         return data;
@@ -40,7 +53,7 @@ public class IsotopicBlockItem extends BlockItem implements IIsotopic {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         AtomicInteger i = new AtomicInteger();
-        ((IIsotopic)stack.getItem()).getIsotopicData().forEach(iso -> {
+        this.getIsotopicData().forEach(iso -> {
             i.getAndIncrement();
             tooltip.add(new TranslationTextComponent("tooltip."+stack.getTranslationKey()+".isotope."+i.get()).mergeStyle(TextFormatting.DARK_GREEN).appendSibling(new StringTextComponent(": " + iso.getPercentage()).mergeStyle(TextFormatting.WHITE).appendSibling(new StringTextComponent("%"))));
         });

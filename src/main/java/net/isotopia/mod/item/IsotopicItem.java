@@ -4,7 +4,9 @@ import net.isotopia.mod.helper.IIsotopic;
 import net.isotopia.mod.helper.IsotopeData;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -18,7 +20,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class IsotopicItem extends Item implements IIsotopic {
 
     private List<IsotopeData> data;
-
 
     public IsotopicItem(Item.Properties properties, List<IsotopeData> data) {
         super(properties);

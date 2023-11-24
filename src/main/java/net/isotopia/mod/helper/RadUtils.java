@@ -37,7 +37,7 @@ public class RadUtils {
         if (player != null) {
             if (isInEitherHand(player, ModItems.GEIGER.get())) {
                 DecimalFormat df = new DecimalFormat("#.#");
-                player.getCapability(Capabilities.PLAYER_RAD).ifPresent(cap -> fr.drawStringWithShadow(matrixStack, "Radiation: " + RadUtils.formatDoseRate(Double.parseDouble(df.format(cap.getDosingRate()))), scaledWidth/4 - 10, scaledHeight/4 - 5, 0xFFFFFF));
+                player.getCapability(Capabilities.PLAYER_RAD).ifPresent(cap -> fr.drawStringWithShadow(matrixStack, "Radiation: " + RadUtils.formatDoseRate(Double.parseDouble(df.format(cap.momentDose()))), scaledWidth/4 - 18, scaledHeight/4 - 5, 0xFFFFFF));
 
             }
         }
