@@ -1,6 +1,7 @@
 package net.isotopia.mod.tile;
 
 import com.google.common.collect.Lists;
+import net.isotopia.mod.block.FissileBlock;
 import net.isotopia.mod.block.GlowingRadioactiveBlock;
 import net.isotopia.mod.block.IsotopicBlock;
 import net.isotopia.mod.helper.IIsotopic;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class IsotopeTile extends TileEntity implements ITickableTileEntity, IIsotopic {
 
-    private List<IsotopeData> iso_data = new ArrayList<>(4);
+    private List<IsotopeData> iso_data = new ArrayList<>(8);
     public IsotopeTile() {
         super(IsoTiles.ISO.get());
     }
@@ -71,6 +72,12 @@ public class IsotopeTile extends TileEntity implements ITickableTileEntity, IIso
                 GlowingRadioactiveBlock block = (GlowingRadioactiveBlock) this.getBlockState().getBlock();
                 if(block.getIsotopicData().get(0).getPercentage() > 0.9f) {
                     block.setGlow(getBlockState(), world, pos, true);
+                }
+            }
+            if(this.getBlockState().getBlock() instanceof FissileBlock){
+                FissileBlock block = (FissileBlock) this.getBlockState().getBlock();
+                if(block.getIsotopicData().get(0).getPercentage() > 90.0f) {
+                    block.setFissile(getBlockState(), world, pos, true);
                 }
             }
         }

@@ -17,9 +17,6 @@ public class IsoTiles {
     public static final DeferredRegister<TileEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, IsotopiaMod.MOD_ID);
 
     public static final RegistryObject<TileEntityType<IsotopeTile>> ISO = TILES.register("isotopic", () -> registerTiles(IsotopeTile::new, ModBlocks.URANIUM_ORE.get()));
-    public static final RegistryObject<TileEntityType<IsotopeTile>> ISOBLOCK = TILES.register("isotopicblock", () -> registerTiles(IsotopeTile::new, ModBlocks.URANIUM_BLOCK.get()));
-
-
 
     private static <T extends TileEntity> TileEntityType<T> registerTiles(Supplier<T> tile, Block... validBlock) {
         TileEntityType<T> type = TileEntityType.Builder.create(tile, validBlock).build(null);

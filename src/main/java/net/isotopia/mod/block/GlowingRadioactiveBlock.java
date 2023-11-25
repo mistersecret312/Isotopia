@@ -27,6 +27,7 @@ public class GlowingRadioactiveBlock extends IsotopicBlock {
         super(properties, data);
         this.setDefaultState(stateContainer.getBaseState().with(property, false));
     }
+
     public void setGlow(BlockState state, World world, BlockPos pos, boolean value){
         world.setBlockState(pos, state.with(property, value));
     }

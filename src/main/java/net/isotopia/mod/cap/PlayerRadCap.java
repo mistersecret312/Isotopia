@@ -36,8 +36,8 @@ public class PlayerRadCap implements IPlayerRad {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT tag = new CompoundNBT();
-        tag.putDouble("dose", this.dose);
-        tag.putDouble("dose_rates", this.localDose);
+        tag.putDouble("dose", this.getDose());
+        tag.putDouble("dose_rates", this.momentDose());
         return tag;
     }
 
@@ -46,101 +46,6 @@ public class PlayerRadCap implements IPlayerRad {
         this.dose = nbt.getDouble("dose");
         this.localDose = nbt.getDouble("dose_rates");
 
-    }
-
-    public double getDoseRates(){
-        localDose = 0;
-        World world = player.getEntityWorld();
-        if(world.getGameTime() % 20 == 0) {
-            if (player != null && !world.isRemote()) {
-
-                AxisAlignedBB aabb = new AxisAlignedBB(new BlockPos(player.lastTickPosX, player.lastTickPosY, player.lastTickPosZ)).grow(12);
-
-                for (BlockPos blockPos : BlockPos.getAllInBoxMutable((int) aabb.minX, (int) aabb.minY, (int) aabb.minZ, (int) aabb.maxX, (int) aabb.maxY, (int) aabb.maxZ)) {
-                    double distance = player.getDistanceSq(new Vector3d(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
-
-                    if (world.getBlockState(blockPos).getBlock() instanceof IRadioactive) {
-                        Block foundBlock = world.getBlockState(blockPos).getBlock();
-                        RadioactiveProperties radioactiveBlock = ((IRadioactive) foundBlock).getRadProps();
-
-                        localDose += (radioactiveBlock.getActivityAlpha() * radioactiveBlock.getEnergyPerDecayAlpha()) / (4 * Math.PI * distance);
-                        localDose += (radioactiveBlock.getActivityBeta() * radioactiveBlock.getEnergyPerDecayBeta()) / (4 * Math.PI * distance);
-                        localDose += (radioactiveBlock.getActivityGamma() * radioactiveBlock.getEnergyPerDecayGamma()) / (4 * Math.PI * distance);
-
-                        RadioactiveProperties fromArmor = RadUtils.getArmorProtectionFromRadiation(player);
-                        localDose -= (fromArmor.getActivityAlpha()* fromArmor.getEnergyPerDecayAlpha())/(4*Math.PI);
-                        localDose -= (fromArmor.getActivityBeta()* fromArmor.getEnergyPerDecayBeta())/(4*Math.PI);
-                        localDose -= (fromArmor.getActivityGamma()* fromArmor.getEnergyPerDecayGamma())/(4*Math.PI);
-                    }
-                    if(world.getBlockState(blockPos).getBlock() instanceof IIsotopic) {
-                        Block foundBlock = world.getBlockState(blockPos).getBlock();
-                        List<IsotopeData> data = ((IIsotopic)foundBlock).getIsotopicData();
-                        data.forEach(isotopeData -> {
-                            localDose += ((isotopeData.radioactiveProperties.getActivityAlpha()*isotopeData.radioactiveProperties.getEnergyPerDecayAlpha())/ (4 * Math.PI * distance));
-                            localDose += ((isotopeData.radioactiveProperties.getActivityBeta()*isotopeData.radioactiveProperties.getEnergyPerDecayBeta())/ (4 * Math.PI * distance));
-                            localDose += ((isotopeData.radioactiveProperties.getActivityGamma()*isotopeData.radioactiveProperties.getEnergyPerDecayGamma())/ (4 * Math.PI * distance));
-                        });
-                    }
-                    if(world.getBlockState(blockPos).hasTileEntity()){
-                        if(world.getTileEntity(blockPos) instanceof IsotopeTile){
-                            IsotopeTile tile = (IsotopeTile) world.getTileEntity(blockPos);
-                            List<IsotopeData> data = tile.getIsotopicData();
-                            data.forEach(isotopeData -> {
-                                localDose += ((isotopeData.radioactiveProperties.getActivityAlpha()*isotopeData.radioactiveProperties.getEnergyPerDecayAlpha())/ (8 * Math.PI * distance));
-                                localDose += ((isotopeData.radioactiveProperties.getActivityBeta()*isotopeData.radioactiveProperties.getEnergyPerDecayBeta())/ (8 * Math.PI * distance));
-                                localDose += ((isotopeData.radioactiveProperties.getActivityGamma()*isotopeData.radioactiveProperties.getEnergyPerDecayGamma())/ (8 * Math.PI * distance));
-                            });
-                        }
-                        world.getTileEntity(blockPos).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(cap -> {
-                            int slotCount = cap.getSlots();
-                            for (int slotIndex = 0; slotIndex < slotCount; slotIndex++) {
-                                if(cap.getStackInSlot(slotIndex).getItem() instanceof IRadioactive){
-                                    ItemStack item = cap.getStackInSlot(slotIndex);
-                                    int count = item.getCount();
-                                    RadioactiveProperties foundItem = ((IRadioactive) item.getItem()).getRadProps();
-                                    localDose += ((foundItem.getActivityAlpha() * foundItem.getEnergyPerDecayAlpha()) / (8 * Math.PI))*count;
-                                    localDose += ((foundItem.getActivityBeta() * foundItem.getEnergyPerDecayBeta()) / (8 * Math.PI))*count;
-                                    localDose += ((foundItem.getActivityGamma() * foundItem.getEnergyPerDecayGamma()) / (8 * Math.PI))*count;
-                                }
-                                if(cap.getStackInSlot(slotIndex).getItem() instanceof IIsotopic){
-                                    ItemStack item = cap.getStackInSlot(slotIndex);
-                                    int count = item.getCount();
-                                    List<IsotopeData> data = ((IIsotopic) item.getItem()).getIsotopicData();
-                                    data.forEach(isotopeData -> {
-                                        localDose += ((isotopeData.radioactiveProperties.getActivityAlpha()*isotopeData.radioactiveProperties.getEnergyPerDecayAlpha())/ (8 * Math.PI * count));
-                                        localDose += ((isotopeData.radioactiveProperties.getActivityBeta()*isotopeData.radioactiveProperties.getEnergyPerDecayBeta())/ (8 * Math.PI * count));
-                                        localDose += ((isotopeData.radioactiveProperties.getActivityGamma()*isotopeData.radioactiveProperties.getEnergyPerDecayGamma())/ (8 * Math.PI * count));
-                                    });
-                                }
-                            }
-                        });
-                    }
-                }
-                PlayerInventory playerInventory = player.inventory;
-                for (int slot = 0; slot < playerInventory.getSizeInventory(); slot++) {
-                    ItemStack item = playerInventory.getStackInSlot(slot);
-                    int count = item.getCount();
-                    if (item.getItem() instanceof IRadioactive) {
-                        RadioactiveProperties foundItem = ((IRadioactive) item.getItem()).getRadProps();
-                        localDose += ((foundItem.getActivityAlpha() * foundItem.getEnergyPerDecayAlpha()) / (8 * Math.PI))*count;
-                        localDose += ((foundItem.getActivityBeta() * foundItem.getEnergyPerDecayBeta()) / (8 * Math.PI))*count;
-                        localDose += ((foundItem.getActivityGamma() * foundItem.getEnergyPerDecayGamma()) / (8 * Math.PI))*count;
-                    }
-                    if(item.getItem() instanceof IsotopicItem){
-                        IsotopicItem itom = (IsotopicItem) item.getItem();
-                        itom.getIsotopicData().forEach(isotopeData -> {
-                            localDose += ((isotopeData.radioactiveProperties.getActivityAlpha()*isotopeData.radioactiveProperties.getEnergyPerDecayAlpha())/ (8*Math.PI))*count;
-                            localDose += ((isotopeData.radioactiveProperties.getActivityBeta()*isotopeData.radioactiveProperties.getEnergyPerDecayBeta())/ (8*Math.PI))*count;
-                            localDose += ((isotopeData.radioactiveProperties.getActivityGamma()*isotopeData.radioactiveProperties.getEnergyPerDecayGamma())/ (8*Math.PI))*count;
-                        });
-                    }
-                }
-            }
-
-            update();
-
-        }
-        return localDose;
     }
 
     @Override
@@ -210,8 +115,11 @@ public class PlayerRadCap implements IPlayerRad {
                 dose = 0;
             }
 
-            this.hasCheckedDose = false;
-            this.localDose = 0;
+            if(this.hasCheckedDose){
+                this.hasCheckedDose = false;
+                this.localDose = 0;
+            }
+
             update();
         }
     }
@@ -220,12 +128,15 @@ public class PlayerRadCap implements IPlayerRad {
     public void update() {
         if (!player.world.isRemote)
             IsoNetwork.sendTo(new RadiationPacket(player.getEntityId(), this.serializeNBT()), (ServerPlayerEntity) player);
+
+
+
     }
 
 
     @Override
     public double getDose(){
-        return this.dose;
+        return this.dose/(20*1600);
     }
 
     public double momentDose(){
@@ -254,9 +165,9 @@ public class PlayerRadCap implements IPlayerRad {
                     Block foundBlock = world.getBlockState(blockPos).getBlock();
                     List<IsotopeData> data = ((IIsotopic)foundBlock).getIsotopicData();
                     data.forEach(isotopeData -> {
-                        localDose += ((isotopeData.radioactiveProperties.getActivityAlpha()*isotopeData.radioactiveProperties.getEnergyPerDecayAlpha())/ (8*Math.PI));
-                        localDose += ((isotopeData.radioactiveProperties.getActivityBeta()*isotopeData.radioactiveProperties.getEnergyPerDecayBeta())/ (8*Math.PI));
-                        localDose += ((isotopeData.radioactiveProperties.getActivityGamma()*isotopeData.radioactiveProperties.getEnergyPerDecayGamma())/ (8*Math.PI));
+                        localDose += (isotopeData.percentage/100) * ((isotopeData.radioactiveProperties.getActivityAlpha()*isotopeData.radioactiveProperties.getEnergyPerDecayAlpha())/ (8*Math.PI));
+                        localDose += (isotopeData.percentage/100) * ((isotopeData.radioactiveProperties.getActivityBeta()*isotopeData.radioactiveProperties.getEnergyPerDecayBeta())/ (8*Math.PI));
+                        localDose += (isotopeData.percentage/100) * ((isotopeData.radioactiveProperties.getActivityGamma()*isotopeData.radioactiveProperties.getEnergyPerDecayGamma())/ (8*Math.PI));
                     });
                 }
             }
@@ -270,17 +181,17 @@ public class PlayerRadCap implements IPlayerRad {
                     localDose += ((foundItem.getActivityBeta() * foundItem.getEnergyPerDecayBeta()) / (8 * Math.PI))*count;
                     localDose += ((foundItem.getActivityGamma() * foundItem.getEnergyPerDecayGamma()) / (8 * Math.PI))*count;
                 }
-                if(item.getItem() instanceof IsotopicItem){
-                    IsotopicItem itom = (IsotopicItem) item.getItem();
+                if(item.getItem() instanceof IIsotopic){
+                    IIsotopic itom = (IIsotopic) item.getItem();
                     itom.getIsotopicData().forEach(isotopeData -> {
-                        localDose += ((isotopeData.radioactiveProperties.getActivityAlpha()*isotopeData.radioactiveProperties.getEnergyPerDecayAlpha())/ (8*Math.PI))*count;
-                        localDose += ((isotopeData.radioactiveProperties.getActivityBeta()*isotopeData.radioactiveProperties.getEnergyPerDecayBeta())/ (8*Math.PI))*count;
-                        localDose += ((isotopeData.radioactiveProperties.getActivityGamma()*isotopeData.radioactiveProperties.getEnergyPerDecayGamma())/ (8*Math.PI))*count;
+                        localDose += (isotopeData.percentage/100) * ((isotopeData.radioactiveProperties.getActivityAlpha()*isotopeData.radioactiveProperties.getEnergyPerDecayAlpha())/ (8*Math.PI))*count;
+                        localDose += (isotopeData.percentage/100) * ((isotopeData.radioactiveProperties.getActivityBeta()*isotopeData.radioactiveProperties.getEnergyPerDecayBeta())/ (8*Math.PI))*count;
+                        localDose += (isotopeData.percentage/100) * ((isotopeData.radioactiveProperties.getActivityGamma()*isotopeData.radioactiveProperties.getEnergyPerDecayGamma())/ (8*Math.PI))*count;
                     });
                 }
             }
         }
         this.hasCheckedDose = true;
-        return localDose/(20*800);
+        return localDose/(20*1600);
     }
 }

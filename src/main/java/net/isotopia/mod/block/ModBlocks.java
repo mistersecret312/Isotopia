@@ -33,8 +33,8 @@ public class ModBlocks {
             () -> new GlowingRadioactiveBlock(AbstractBlock.Properties.create(Material.ROCK)
                     .harvestLevel(2).setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(5f), Lists.newArrayList(new IsotopeData(0.7, new RadioactiveProperties(300000, 300, 0, 4.2, 0.002, 0.0)), new IsotopeData(99.3, new RadioactiveProperties(5555, 2, 1, 4.8, 0.2, 1.2)))), Lists.newArrayList(new IsotopeData(0.7, new RadioactiveProperties(300000, 300, 0, 4.2, 0.002, 0.0)), new IsotopeData(99.3, new RadioactiveProperties(5555, 2, 1, 4.8, 0.2, 1.2))));
 
-    public static final RegistryObject<Block> URANIUM_BLOCK = registerIsotopicBlock("uranium_block",
-            () -> new IsotopicBlock(AbstractBlock.Properties.create(Material.ROCK)
+    public static final RegistryObject<Block> URANIUM_BLOCK = registerFissileBlock("uranium_block",
+            () -> new FissileBlock(AbstractBlock.Properties.create(Material.ROCK)
                     .harvestLevel(2).setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(8f), Lists.newArrayList(new IsotopeData(0.7, new RadioactiveProperties(300000, 300, 0, 4.2, 0.002, 0.0)), new IsotopeData(99.3, new RadioactiveProperties(5555, 2, 1, 4.8, 0.2, 1.2)))), Lists.newArrayList(new IsotopeData(0.7, new RadioactiveProperties(300000, 300, 0, 4.2, 0.002, 0.0)), new IsotopeData(99.3, new RadioactiveProperties(5555, 2, 1, 4.8, 0.2, 1.2))));
 
 
@@ -51,6 +51,12 @@ public class ModBlocks {
     }
 
     private static <T extends Block>RegistryObject<T> registerIsotopicBlock(String name, Supplier<T> block, List<IsotopeData> data) {
+        RegistryObject<T> toReturn = BLOCKS.register(name, block);
+        registerIsotopicBlockItem(name, toReturn, data);
+        return toReturn;
+    }
+
+    private static <T extends Block>RegistryObject<T> registerFissileBlock(String name, Supplier<T> block, List<IsotopeData> data) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerIsotopicBlockItem(name, toReturn, data);
         return toReturn;
